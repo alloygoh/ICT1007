@@ -1,0 +1,48 @@
+#!/bin/bash
+
+EXECUTABLE_NAME="./assignment"
+INPUTFILENAME="input.txt"
+
+setup(){
+    content="0 2
+    0 2
+    1 3
+    2 4
+    3 4"
+
+    echo $content > $INPUTFILENAME
+}
+
+cleanup(){
+    rm -rf $INPUTFILENAME
+}
+
+# Two arguments:
+# 1) Input
+# 2) Expected output
+test(){
+    input="$1"
+    expected_output="$2"
+
+    output=$($EXECUTABLE_NAME "$input")
+
+    if [[ "$output" =~ $expected_output ]]; then
+        echo "Passed: '$input'"
+    else
+        echo -e "Failed: '$input'\ngot:\n$output\nexpected\n$expected_output\n"
+        cleanup
+        exit 1
+    fi
+}
+
+# Start here
+setup
+
+# Test case 1
+output="^average turnaround time: [0-9 .]+
+maximum turnaround time: [0-9 .]+
+average waiting time: [0-9 .]+
+maximum waiting time: [0-9 .]+$"
+test "$INPUTFILENAME" "$output"
+
+cleanup
